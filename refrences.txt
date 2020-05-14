@@ -1,0 +1,5 @@
+https://thispointer.com/python-read-a-csv-file-line-by-line-with-or-without-header/
+
+https://stackoverflow.com/questions/3151146/replace-the-single-quote-character-from-a-string
+
+https://orientdb.org/docs/3.0.x/sql/SQL-Functions.html
