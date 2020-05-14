@@ -1,2 +1,2 @@
-
+hello
 localhost:8088/api/gethospital/1234
