@@ -36,7 +36,8 @@ def creating_hospitals_table():
     client.command("CREATE PROPERTY hospitals.occupied_beds INTEGER")
     client.command("CREATE PROPERTY hospitals.available_beds INTEGER")
     client.close()
-# creating_hospitals_table()
+
+#creating_hospitals_table()
 
 
 
@@ -81,7 +82,7 @@ def importing_hospital_data():
                 client.command("UPDATE hospitals SET occupied_beds= 0")
 
     client.close()
-# importing_hospital_data()
+#importing_hospital_data()
 
 def creating_kyzipdistance_table():
     dbname = "finall"
@@ -101,7 +102,7 @@ def creating_kyzipdistance_table():
     client.command("CREATE PROPERTY kyzipdistance.distance FLOAT")
     client.close()
 
-# kyzipdistance_table()
+#creating_kyzipdistance_table()
 
 
 def importing_kyzipdistance_data():
@@ -126,5 +127,5 @@ def importing_kyzipdistance_data():
                 client.command("UPDATE kyzipdistance SET distance= '"+str(row[2])+"' WHERE zip_from="+str(row[0]))
 
     client.close()
-# importing_kyzipdistance_data()
+importing_kyzipdistance_data()
 
