@@ -127,5 +127,27 @@ def importing_kyzipdistance_data():
                 client.command("UPDATE kyzipdistance SET distance= '"+str(row[2])+"' WHERE zip_from="+str(row[0]))
 
     client.close()
-importing_kyzipdistance_data()
+# importing_kyzipdistance_data()
+
+def creating_patient_table():
+    dbname = "finall"
+    login = "root"
+    password = "rootpwd"
+    # create client to connect to local orientdb docker container
+    client = pyorient.OrientDB("localhost", 2424)
+    session_id = client.connect(login, password)
+
+    # open the database by its name
+    client.db_open(dbname, login, password)
+
+    # kyzipdistance table
+    client.command("CREATE CLASS patient EXTENDS V")
+    client.command("CREATE PROPERTY patient.first_name STRING")
+    client.command("CREATE PROPERTY patient.last_name STRING")
+    client.command("CREATE PROPERTY patient.mrn INTEGER")
+    client.command("CREATE PROPERTY patient.zip_code INTEGER")
+    client.command("CREATE PROPERTY patient.patient_status_code INTEGER")
+    client.close()
+
+creating_patient_table()
 
