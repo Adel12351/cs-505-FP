@@ -32,7 +32,12 @@ for binding_key in binding_keys:
 print(' [*] Waiting for logs. To exit pres CTRL+C')
 
 def callback(ch, method, properties, body):
-    print(" [x] %r:%r" % (method.routing_key, body))
+    #print(" [x] %r:%r" % (method.routing_key, body))
+    temp = json.loads(body,encoding='utf-8')
+    print("body: {}".format(temp))
+    for i in temp:
+        # print("i is {}".format(i))
+        print("first name is: {}, last name is: {}, mrn is: {}, zip code is: {}, pathient status code is: {}".format(i[0],i[1],i[2],i[3],i[4]))
 
 
 channel.basic_consume(
