@@ -144,10 +144,10 @@ def creating_patient_table():
     client.command("CREATE CLASS patient EXTENDS V")
     client.command("CREATE PROPERTY patient.first_name STRING")
     client.command("CREATE PROPERTY patient.last_name STRING")
-    client.command("CREATE PROPERTY patient.mrn INTEGER")
+    client.command("CREATE PROPERTY patient.mrn STRING")
     client.command("CREATE PROPERTY patient.zip_code INTEGER")
     client.command("CREATE PROPERTY patient.patient_status_code INTEGER")
     client.close()
 
-creating_patient_table()
+# creating_patient_table()
 

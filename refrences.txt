@@ -3,3 +3,13 @@ https://thispointer.com/python-read-a-csv-file-line-by-line-with-or-without-head
 https://stackoverflow.com/questions/3151146/replace-the-single-quote-character-from-a-string
 
 https://orientdb.org/docs/3.0.x/sql/SQL-Functions.html
+
+https://stackoverflow.com/questions/18795253/print-all-values-of-a-given-key-of-dictionaries-in-a-list
+
+https://www.w3schools.com/python/python_dictionaries.asp
+
+https://stackoverflow.com/questions/34056181/python-run-code-every-n-seconds-and-restart-timer-on-condition
+
+https://www.semicolonworld.com/question/59681/periodically-execute-function-in-thread-in-real-time-every-n-seconds
+
+
