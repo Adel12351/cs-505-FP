@@ -88,9 +88,13 @@ def counter():
     if len(alert_state) > 0:
         for row in alert_state:
             client.command("UPDATE alert_state ADD zip_code=" + row)
+        if len(alert_state) >= 5:
+            client.command("UPDATE alert_state set alert_statewide = 1")
     else:
         print("safe state")
-        client.command("UPDATE alert_state set zip_code = null")
+        client.command("UPDATE alert_state set zip_code = []")
+        client.command("UPDATE alert_state set alert_statewide = 0")
+
     client.close()
 
     check_zip_code2 = check_zip_code.copy()

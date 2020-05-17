@@ -167,5 +167,5 @@ def creating_alert_state_table():
     client.command("CREATE PROPERTY alert_state.zip_code EMBEDDEDLIST STRING")
     client.command("CREATE PROPERTY alert_state.alert_statewide INTEGER")
     client.close()
-creating_alert_state_table()
+# creating_alert_state_table()
 
