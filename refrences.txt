@@ -12,4 +12,10 @@ https://stackoverflow.com/questions/34056181/python-run-code-every-n-seconds-and
 
 https://www.semicolonworld.com/question/59681/periodically-execute-function-in-thread-in-real-time-every-n-seconds
 
+https://www.w3schools.com/python/python_dictionaries.asp
 
+https://www.geeksforgeeks.org/python-get-key-from-value-in-dictionary/
+
+https://www.w3schools.com/python/python_json.asp
+
+https://www.w3schools.com/python/python_lists.asp

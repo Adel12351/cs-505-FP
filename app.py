@@ -24,8 +24,18 @@ def reset():
 
 @app.route('/api/zipalertlist')
 def zipalertlist():
+    dbname = "finall"
+    login = "root"
+    password = "rootpwd"
+    # create client to connect to local orientdb docker container
+    client = pyorient.OrientDB("localhost", 2424)
+    session_id = client.connect(login, password)
+    client.db_open(dbname, login, password)
+    ziplist=client.command("SELECT zip_code from alert_state")
+    ziplist=ziplist[0].__getattr__('zip_code')
+    client.close()
     list={
-        "ziplist":["123","456","789"]
+        "ziplist":ziplist
     }
     return list
 

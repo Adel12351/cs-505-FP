@@ -151,3 +151,21 @@ def creating_patient_table():
 
 # creating_patient_table()
 
+def creating_alert_state_table():
+    dbname = "finall"
+    login = "root"
+    password = "rootpwd"
+    # create client to connect to local orientdb docker container
+    client = pyorient.OrientDB("172.31.147.227", 2424)
+    session_id = client.connect(login, password)
+
+    # open the database by its name
+    client.db_open(dbname, login, password)
+
+    # kyzipdistance table
+    client.command("CREATE CLASS alert_state EXTENDS V")
+    client.command("CREATE PROPERTY alert_state.zip_code EMBEDDEDLIST STRING")
+    client.command("CREATE PROPERTY alert_state.alert_statewide INTEGER")
+    client.close()
+creating_alert_state_table()
+
