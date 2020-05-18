@@ -58,9 +58,21 @@ def alertlist():
 
 @app.route('/api/testcount')
 def testcount():
+    dbname = "finall"
+    login = "root"
+    password = "rootpwd"
+    # create client to connect to local orientdb docker container
+    client = pyorient.OrientDB("172.31.147.227", 2424)
+    session_id = client.connect(login, password)
+    client.db_open(dbname, login, password)
+    positive_test=client.command("SELECT COUNT(patient_status_code) FROM patient WHERE patient_status_code = 2 OR patient_status_code = 5 OR patient_status_code = 6")
+    positive_test = positive_test[0].__getattr__('COUNT')
+    negative_test= client.command("SELECT COUNT(patient_status_code) FROM patient WHERE patient_status_code = 1 OR patient_status_code = 4 ")
+    negative_test = negative_test[0].__getattr__('COUNT')
+    client.close()
     status={
-        "positive_test":"0",
-        "negative_test":"0"
+        "positive_test":positive_test,
+        "negative_test":negative_test
     }
     return status
 @app.route('/api/getpatient/<mrn>')

@@ -37,18 +37,37 @@ for binding_key in binding_keys:
     channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key=binding_key)
 
 print(' [*] Waiting for logs. To exit pres CTRL+C')
-counter = 0
+
 def callback(ch, method, properties, body):
     #print(" [x] %r:%r" % (method.routing_key, body))
     global check_zip_code
     temp = json.loads(body,encoding='utf-8')
     #print("body: {}".format(len(temp)))
+
+    dbname = "finall"
+    login = "root"
+    password = "rootpwd"
+    # create client to connect to local orientdb docker container
+    client = pyorient.OrientDB("172.31.147.227", 2424)
+    session_id = client.connect(login, password)
+    # open the database by its name
+    client.db_open(dbname, login, password)
+
     for i in temp:
+        first_name = i['first_name']
+        last_name = i['last_name']
+        mrn = i['mrn']
+        zip_code = i['zip_code']
+        patient_status_code = i['patient_status_code']
+        # filling the patient table
+        client.command("CREATE VERTEX patient SET mrn= '" + mrn +"', first_name = '" + first_name + "', last_name = '"+last_name+"',zip_code = "+ zip_code +",patient_status_code = " + patient_status_code )
         if i['zip_code'] in check_zip_code:
             check_zip_code[i['zip_code']]= check_zip_code[i['zip_code']] +1
         else:
             check_zip_code[i['zip_code']] = 1
         # print ("/zip code is: " + i['zip_code'])
+     # print("////////////first_name is{}, last_name is :{}, mrn is {}, zip_code is {}, patient_status_code is: {}".format(first_name,last_name,mrn,zip_code,patient_status_code))
+    client.close()
 
 def counter():
     threading.Timer(15.0,counter).start()
@@ -101,12 +120,6 @@ def counter():
     check_zip_code.clear()
 
 counter()
-
-# while True:
-#     #schedule.run_pending()
-#     time.sleep(15)
-#     counter()
-
 
 channel.basic_consume(
     queue=queue_name, on_message_callback=callback,auto_ack=True)
