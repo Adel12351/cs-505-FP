@@ -115,19 +115,23 @@ def importing_kyzipdistance_data():
 
     # open the database by its name
     client.db_open(dbname, login, password)
+    counter = 0
 
     with open('kyzipdistance.csv','r') as kyzipdistance_csv:
         csv_reader_kyzipdistance=reader(kyzipdistance_csv)
         header=next(csv_reader_kyzipdistance)
         if header != None:
             for row in csv_reader_kyzipdistance:
-                # print("From:{} To:{} is:{}".format(row[0],row[1],row[2]))
-                client.command("CREATE VERTEX kyzipdistance SET zip_from="+str(row[0]))
-                client.command("UPDATE kyzipdistance SET zip_to= '" +str(row[1])+"'WHERE zip_from="+str(row[0]))
-                client.command("UPDATE kyzipdistance SET distance= '"+str(row[2])+"' WHERE zip_from="+str(row[0]))
+                #print(counter)
+                #print("From:{} To:{} is:{}".format(row[0],row[1],row[2]))
+                #counter = counter + 1
+                client.command("CREATE VERTEX kyzipdistance SET zip_from = " + str(row[0]) + ", zip_from = " + str(row[1]) + ", distance = " + str(row[2]) )
+                #client.command("CREATE VERTEX kyzipdistance SET zip_from="+str(row[0]))
+                #client.command("UPDATE kyzipdistance SET zip_to= '" +str(row[1])+"'WHERE zip_from="+str(row[0]))
+                #client.command("UPDATE kyzipdistance SET distance= '"+str(row[2])+"' WHERE zip_from="+str(row[0]))
 
     client.close()
-# importing_kyzipdistance_data()
+importing_kyzipdistance_data()
 
 def creating_patient_table():
     dbname = "finall"
