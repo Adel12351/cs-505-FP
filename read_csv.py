@@ -125,13 +125,13 @@ def importing_kyzipdistance_data():
                 #print(counter)
                 #print("From:{} To:{} is:{}".format(row[0],row[1],row[2]))
                 #counter = counter + 1
-                client.command("CREATE VERTEX kyzipdistance SET zip_from = " + str(row[0]) + ", zip_from = " + str(row[1]) + ", distance = " + str(row[2]) )
-                #client.command("CREATE VERTEX kyzipdistance SET zip_from="+str(row[0]))
-                #client.command("UPDATE kyzipdistance SET zip_to= '" +str(row[1])+"'WHERE zip_from="+str(row[0]))
-                #client.command("UPDATE kyzipdistance SET distance= '"+str(row[2])+"' WHERE zip_from="+str(row[0]))
+                client.command("CREATE VERTEX kyzipdistance SET zip_from = " + str(row[0]) + ", zip_to = " + str(row[1]) + ", distance = " + str(row[2]) )
+                # client.command("CREATE VERTEX kyzipdistance SET zip_from="+str(row[0]))
+                # client.command("UPDATE kyzipdistance SET zip_to= '" +str(row[1])+"'WHERE zip_from="+str(row[0]))
+                # client.command("UPDATE kyzipdistance SET distance= '"+str(row[2])+"' WHERE zip_from="+str(row[0]))
 
     client.close()
-importing_kyzipdistance_data()
+# importing_kyzipdistance_data()
 
 def creating_patient_table():
     dbname = "finall"
@@ -151,6 +151,8 @@ def creating_patient_table():
     client.command("CREATE PROPERTY patient.mrn STRING")
     client.command("CREATE PROPERTY patient.zip_code INTEGER")
     client.command("CREATE PROPERTY patient.patient_status_code INTEGER")
+    # for OF1
+    client.command("CREATE PROPERTY patient.location_code INTEGER")
     client.close()
 
 # creating_patient_table()
