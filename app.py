@@ -77,11 +77,30 @@ def testcount():
     return status
 @app.route('/api/getpatient/<mrn>')
 def getpatient(mrn):
-    patientDetail={
-        "mrn":mrn,
-        "location_code":"12345"
-    }
-    return patientDetail
+    dbname = "finall"
+    login = "root"
+    password = "rootpwd"
+    # create client to connect to local orientdb docker container
+    client = pyorient.OrientDB("172.31.147.227", 2424)
+    session_id = client.connect(login, password)
+    client.db_open(dbname, login, password)
+    location_code = client.command("SELECT location_code FROM patient WHERE mrn = '" + mrn + "'")
+
+    #location_code = location_code[0].__getattr__('location_code')
+    client.close()
+    if len(location_code)  > 0:
+        location_code = location_code[0].__getattr__('location_code')
+        patientDetail={
+            "mrn":mrn,
+            "location_code":location_code
+        }
+        return patientDetail
+    else:
+        patientDetail = {
+            "mrn": "mrn not found",
+            "location_code": "location_code"
+        }
+        return patientDetail
 
 @app.route("/api/gethospital/<id>")
 @as_json

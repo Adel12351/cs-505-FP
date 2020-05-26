@@ -42,7 +42,7 @@ def callback(ch, method, properties, body):
     #print(" [x] %r:%r" % (method.routing_key, body))
     global check_zip_code
     temp = json.loads(body,encoding='utf-8')
-    #print("body: {}".format(len(temp)))
+    #print("body: {}".format(temp))
 
     dbname = "finall"
     login = "root"
@@ -58,9 +58,19 @@ def callback(ch, method, properties, body):
         last_name = i['last_name']
         mrn = i['mrn']
         zip_code = i['zip_code']
+        print("zip code: ", zip_code)
         patient_status_code = i['patient_status_code']
+        if patient_status_code == "0" or patient_status_code == "1" or patient_status_code == "2" or patient_status_code == "4":
+            pass
+            #client.command("CREATE VERTEX patient SET mrn= '" + mrn +"', first_name = '" + first_name + "', last_name = '"+last_name+"',zip_code = "+ zip_code +",patient_status_code = " + patient_status_code + ", location_code=0" )
+        elif patient_status_code == "3":
+            print("nearest hospital for testing")
+        elif patient_status_code == "5":
+            print("closest available facility for treatment")
+        elif patient_status_code == "6":
+            print ("closest available Level IV (I > II > III > IV) or better treatment facility")
+
         # filling the patient table
-        client.command("CREATE VERTEX patient SET mrn= '" + mrn +"', first_name = '" + first_name + "', last_name = '"+last_name+"',zip_code = "+ zip_code +",patient_status_code = " + patient_status_code )
         if i['zip_code'] in check_zip_code:
             check_zip_code[i['zip_code']]= check_zip_code[i['zip_code']] +1
         else:
@@ -119,7 +129,7 @@ def counter():
     check_zip_code2 = check_zip_code.copy()
     check_zip_code.clear()
 
-counter()
+#counter()
 
 channel.basic_consume(
     queue=queue_name, on_message_callback=callback,auto_ack=True)
