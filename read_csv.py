@@ -46,7 +46,7 @@ def importing_hospital_data():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB("172.31.147.227", 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name

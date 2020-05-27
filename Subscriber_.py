@@ -64,6 +64,7 @@ def callback(ch, method, properties, body):
             pass
             #client.command("CREATE VERTEX patient SET mrn= '" + mrn +"', first_name = '" + first_name + "', last_name = '"+last_name+"',zip_code = "+ zip_code +",patient_status_code = " + patient_status_code + ", location_code=0" )
         elif patient_status_code == "3":
+            neares_hospital=client.command("SELECT min(distance) FROM kyzipdistance WHERE  ")
             print("nearest hospital for testing")
         elif patient_status_code == "5":
             print("closest available facility for treatment")
@@ -119,6 +120,8 @@ def counter():
             client.command("UPDATE alert_state ADD zip_code=" + row)
         if len(alert_state) >= 5:
             client.command("UPDATE alert_state set alert_statewide = 1")
+        else:
+            client.command("UPDATE alert_state set alert_statewide = 0")
     else:
         print("safe state")
         client.command("UPDATE alert_state set zip_code = []")

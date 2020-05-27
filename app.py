@@ -5,6 +5,9 @@ from flask_json import FlaskJSON, as_json
 print("testing app")
 app=Flask(__name__)
 FlaskJSON(app)
+import read_csv
+
+
 
 @app.route('/api/getteam')
 def getteam():
@@ -17,10 +20,30 @@ def getteam():
 
 @app.route('/api/reset')
 def reset():
-    result ={
-        "reset_status_code": "1"
-    }
-    return result
+    try:
+        dbname = "finall"
+        login = "root"
+        password = "rootpwd"
+        # create client to connect to local orientdb docker container
+        client = pyorient.OrientDB("172.31.147.227", 2424)
+        session_id = client.connect(login, password)
+        client.db_open(dbname, login, password)
+        client.command("DELETE VERTEX hospitals")
+        client.command("DELETE VERTEX patient")
+        client.command("DELETE VERTEX alert_state")
+        #read_csv.importing_hospital_data()
+        client.command("CREATE VERTEX alert_state set zip_code = [], alert_statewide = 10")
+        client.close()
+        result ={
+            "reset_status_code": "1"
+        }
+        return result
+
+    except:
+        result = {
+            "reset_status_code": "0"
+        }
+        return result
 
 @app.route('/api/zipalertlist')
 def zipalertlist():
