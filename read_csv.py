@@ -46,7 +46,7 @@ def importing_hospital_data():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("172.31.147.227", 2424)
+    client = pyorient.OrientDB("localhost", 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name
@@ -78,11 +78,12 @@ def importing_hospital_data():
                 client.command("UPDATE hospitals SET OWNER= '" + str(row[15]) + "' where ID = " + str(row[0]))
                 client.command("UPDATE hospitals SET TRAUMA= '" + str(row[16]) + "' where ID = " + str(row[0]))
                 client.command("UPDATE hospitals SET HELIPAD= '" + str(row[17]) + "' where ID = " + str(row[0]))
-                client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds')")
                 client.command("UPDATE hospitals SET occupied_beds= 0")
+                client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds')")
+
 
     client.close()
-#importing_hospital_data()
+# importing_hospital_data()
 
 def creating_kyzipdistance_table():
     dbname = "finall"
@@ -162,7 +163,8 @@ def creating_alert_state_table():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("172.31.147.227", 2424)
+    client = pyorient.OrientDB("localhost", 2424)
+    # client = pyorient.OrientDB("172.31.147.227", 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name
