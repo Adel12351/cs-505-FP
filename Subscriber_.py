@@ -67,15 +67,15 @@ def callback(ch, method, properties, body):
 
         if patient_status_code == "0" or patient_status_code == "1" or patient_status_code == "2" or patient_status_code == "4":
             print ("patient_status_code = 0, 1, 2 or 4")
-            #client.command("CREATE VERTEX patient SET mrn= '" + mrn +"', first_name = '" + first_name + "', last_name = '"+last_name+"',zip_code = "+ zip_code +",patient_status_code = " + patient_status_code + ", location_code=0" )
+            client.command("CREATE VERTEX patient SET mrn= '" + mrn +"', first_name = '" + first_name + "', last_name = '"+last_name+"',zip_code = "+ zip_code +",patient_status_code = " + patient_status_code + ", location_code=0" )
 
         elif patient_status_code == "3":
             temp_result = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals) order by distance asc")
             temp_result = temp_result[0].__getattr__('zip_to')
             hospital_id_in_case_3 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + temp_result)
             hospital_id_in_case_3 = hospital_id_in_case_3[0].__getattr__('ID')
-            print ("3333333333: ",hospital_id_in_case_3)
             client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code=" + hospital_id_in_case_3)
+            print ("3333333333: ", hospital_id_in_case_3)
 
             # nearest_hospital=client.command("SELECT min(distance),zip_to FROM kyzipdistance WHERE zip_from='"+zip_code+"'")
             # hospital_id_in_case_3 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + nearest_hospital)
@@ -86,11 +86,10 @@ def callback(ch, method, properties, body):
             temp_result = temp_result[0].__getattr__('zip_to')
             hospital_id_in_case_5 = client.command("SELECT ID FROM hospitals WHERE ZIP="+ str(temp_result))
             hospital_id_in_case_5= hospital_id_in_case_5[0].__getattr__('ID')
+            client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str(patient_status_code) + ", location_code="+ str(hospital_id_in_case_5))
+            client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_5))
+            client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_5))
             print ("55555555555:  ", hospital_id_in_case_5)
-            client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code="+hospital_id_in_case_5)
-            client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+hospital_id_in_case_5)
-            client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+hospital_id_in_case_5)
-
 
             # nearest_hospital = client.command("SELECT min(distance),zip_to FROM kyzipdistance WHERE zip_from='" + zip_code + "'")
             # hospital_id_in_case_5 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + nearest_hospital + " AND available_beds >= 1")
@@ -98,15 +97,14 @@ def callback(ch, method, properties, body):
             # client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID ='" + hospital_id_in_case_5 +"'")
             # print ("5- in case 5:", hospital_id_in_case_5)
         elif patient_status_code == "6":
-            temp_result = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals WHERE available_beds >= 1) order by distance asc")
+            temp_result = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals WHERE available_beds >= 1 AND TRAUMA != 'NOT AVAILABLE') order by distance asc")
             temp_result = temp_result[0].__getattr__('zip_to')
             hospital_id_in_case_6 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + str(temp_result))
             hospital_id_in_case_6 = hospital_id_in_case_6[0].__getattr__('ID')
+            client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str (patient_status_code) + ", location_code=" + str( hospital_id_in_case_6))
+            client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_6))
+            client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_6))
             print("666666666:  ", hospital_id_in_case_6)
-            client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code=" + hospital_id_in_case_6)
-            client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+hospital_id_in_case_6)
-            client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WEHERE ID="+hospital_id_in_case_6)
-
             
             # nearest_hospital = client.command("SELECT min(distance),zip_to FROM kyzipdistance WHERE zip_from='" + zip_code + "'")
             # hospital_id_in_case_6 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + nearest_hospital + " AND available_beds >= 1")
@@ -186,4 +184,6 @@ channel.basic_consume(
     queue=queue_name, on_message_callback=callback,auto_ack=True)
 
 channel.start_consuming()
+
+# SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = 40353 and zip_to in (select ZIP from hospitals WHERE available_beds >= 1 AND TRAUMA != 'NOT AVAILABLE') order by distance asc
 
