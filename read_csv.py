@@ -174,6 +174,6 @@ def creating_alert_state_table():
     client.command("CREATE CLASS alert_state EXTENDS V")
     client.command("CREATE PROPERTY alert_state.zip_code EMBEDDEDLIST STRING")
     client.command("CREATE PROPERTY alert_state.alert_statewide INTEGER")
+    client.command("CREATE VERTEX alert_state set zip_code = [], alert_statewide = 0")
     client.close()
 # creating_alert_state_table()
-

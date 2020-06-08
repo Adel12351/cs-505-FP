@@ -8,6 +8,7 @@ FlaskJSON(app)
 import read_csv
 
 
+addr="localhost"
 
 @app.route('/api/getteam')
 def getteam():
@@ -25,14 +26,14 @@ def reset():
         login = "root"
         password = "rootpwd"
         # create client to connect to local orientdb docker container
-        client = pyorient.OrientDB("172.31.147.227", 2424)
+        client = pyorient.OrientDB(addr, 2424)
         session_id = client.connect(login, password)
         client.db_open(dbname, login, password)
         client.command("DELETE VERTEX hospitals")
         client.command("DELETE VERTEX patient")
         client.command("DELETE VERTEX alert_state")
-        #read_csv.importing_hospital_data()
-        client.command("CREATE VERTEX alert_state set zip_code = [], alert_statewide = 10")
+        read_csv.importing_hospital_data()
+        client.command("CREATE VERTEX alert_state set zip_code = [], alert_statewide = 0")
         client.close()
         result ={
             "reset_status_code": "1"
@@ -51,14 +52,14 @@ def zipalertlist():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("172.31.147.227", 2424)
+    client = pyorient.OrientDB(addr, 2424)
     session_id = client.connect(login, password)
     client.db_open(dbname, login, password)
     ziplist=client.command("SELECT zip_code from alert_state")
     ziplist=ziplist[0].__getattr__('zip_code')
     client.close()
     list={
-        "zipalertlist":ziplist
+        "ziplist":ziplist
     }
     return list
 
@@ -68,17 +69,17 @@ def alertlist():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("172.31.147.227", 2424)
+    client = pyorient.OrientDB(addr, 2424)
     session_id = client.connect(login, password)
     client.db_open(dbname, login, password)
     state_status = client.command("SELECT alert_statewide from alert_state ")
     state_status = state_status[0].__getattr__('alert_statewide')
     client.close()
+
     status={
         "state_status": state_status
     }
     return status
-
 
 
 @app.route('/api/testcount')
@@ -87,11 +88,9 @@ def testcount():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("172.31.147.227", 2424)
+    client = pyorient.OrientDB(addr, 2424)
     session_id = client.connect(login, password)
     client.db_open(dbname, login, password)
-
-
 
     positive_test=client.command("SELECT COUNT(patient_status_code) FROM patient WHERE patient_status_code = 2 OR patient_status_code = 5 OR patient_status_code = 6")
     positive_test = positive_test[0].__getattr__('COUNT')
@@ -99,14 +98,11 @@ def testcount():
     negative_test = negative_test[0].__getattr__('COUNT')
     client.close()
 
-
     status={
         "positive_test":positive_test,
         "negative_test":negative_test
     }
     return status
-
-
 
 @app.route('/api/getpatient/<mrn>')
 def getpatient(mrn):
@@ -114,7 +110,8 @@ def getpatient(mrn):
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("172.31.147.227", 2424)
+    # client = pyorient.OrientDB("172.31.147.227", 2424)
+    client = pyorient.OrientDB(addr, 2424)
     session_id = client.connect(login, password)
     client.db_open(dbname, login, password)
     location_code = client.command("SELECT location_code FROM patient WHERE mrn = '" + mrn + "'")
@@ -142,7 +139,7 @@ def gethospital(id):
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB(addr, 2424)
     session_id = client.connect(login, password)
     # open the database by its name
     client.db_open(dbname, login, password)
