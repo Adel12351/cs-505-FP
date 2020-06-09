@@ -55,7 +55,7 @@ def callback(ch, method, properties, body):
     session_id = client.connect(login, password)
     # open the database by its name
     client.db_open(dbname, login, password)
-    # saving the patient's data in variables
+    # # saving the patient's data in variables
     for i in temp:
         first_name = i['first_name']
         last_name = i['last_name']
@@ -64,7 +64,7 @@ def callback(ch, method, properties, body):
         # print("zip code: ", type(zip_code))
         patient_status_code = i['patient_status_code']
         patient_data={first_name,last_name,mrn,zip_code}
-        print ("patient ID is: ",mrn)
+       # print ("patient ID is: ",mrn)
 
         if patient_status_code == "0" or patient_status_code == "1" or patient_status_code == "2" or patient_status_code == "4":
             #print ("patient_status_code = 0, 1, 2 or 4")
@@ -97,6 +97,7 @@ def callback(ch, method, properties, body):
             # client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code="+hospital_id_in_case_5)
             # client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID ='" + hospital_id_in_case_5 +"'")
             # print ("5- in case 5:", hospital_id_in_case_5)
+
         elif patient_status_code == "6":
             temp_result = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals WHERE available_beds >= 1 AND TRAUMA != 'NOT AVAILABLE') order by distance asc")
             temp_result = temp_result[0].__getattr__('zip_to')
@@ -140,23 +141,24 @@ def counter():
     session_id = client.connect(login, password)
     client.db_open(dbname, login, password)
 
-    client.command("UPDATE alert_state set zip_code = []")
-    client.command("UPDATE alert_state set alert_statewide = 0")
-
     if len(alert_state) > 0:
+        client.command("UPDATE alert_state set zip_code = []")
+        client.command("UPDATE alert_state set alert_statewide = 0")
         print("alert")
         for row in alert_state:
             client.command("UPDATE alert_state ADD zip_code=" + row)
             # print("we  added {} to zip_code array in orientDB".format(row))
         if len(alert_state) >= 5:
+            pass
             client.command("UPDATE alert_state set alert_statewide = 1")
-            print("we set alert_statewaide = 1")
+            #print("we set alert_statewaide = 1")
         else:
+
             client.command("UPDATE alert_state set alert_statewide = 0")
-            print("we set alert_statewaide = 0")
+            #print("we set alert_statewaide = 0")
     else:
         print("safe state")
-        alert_state = []
+        
         client.command("UPDATE alert_state set zip_code = []")
         client.command("UPDATE alert_state set alert_statewide = 0")
 
