@@ -177,4 +177,4 @@ def creating_alert_state_table():
     client.command("CREATE VERTEX alert_state set zip_code = [], alert_statewide = 0")
     client.close()
 # creating_alert_state_table()
-print("WELCOME!!")
+
