@@ -37,7 +37,7 @@ def creating_hospitals_table():
     client.command("CREATE PROPERTY hospitals.available_beds INTEGER")
     client.close()
 
-creating_hospitals_table()
+# creating_hospitals_table()
 
 
 
@@ -103,7 +103,7 @@ def creating_kyzipdistance_table():
     client.command("CREATE PROPERTY kyzipdistance.distance FLOAT")
     client.close()
 
-#creating_kyzipdistance_table()
+# creating_kyzipdistance_table()
 
 
 def importing_kyzipdistance_data():
