@@ -2,13 +2,13 @@
 import pyorient
 # # import pandas as df
 from csv import reader
-
+add="172.31.145.69"
 def creating_hospitals_table():
     dbname = "finall"
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB(add, 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name
@@ -46,7 +46,7 @@ def importing_hospital_data():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB(add, 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name
@@ -90,7 +90,7 @@ def creating_kyzipdistance_table():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB(add, 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name
@@ -111,7 +111,7 @@ def importing_kyzipdistance_data():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB(add, 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name
@@ -139,7 +139,7 @@ def creating_patient_table():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB(add, 2424)
     session_id = client.connect(login, password)
 
     # open the database by its name
@@ -163,7 +163,7 @@ def creating_alert_state_table():
     login = "root"
     password = "rootpwd"
     # create client to connect to local orientdb docker container
-    client = pyorient.OrientDB("localhost", 2424)
+    client = pyorient.OrientDB(add, 2424)
     # client = pyorient.OrientDB("172.31.147.227", 2424)
     session_id = client.connect(login, password)
 
