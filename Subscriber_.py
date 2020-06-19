@@ -10,7 +10,7 @@ username = 'student'
 password = 'student01'
 hostname = '128.163.202.61'
 virtualhost = 'patient_feed'
-addr = "localhost"
+addr = "172.31.145.69"
 #5672  
 
 credentials = pika.PlainCredentials(username, password)

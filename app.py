@@ -8,7 +8,7 @@ FlaskJSON(app)
 import read_csv
 
 
-addr="localhost"
+addr="172.31.145.69"
 
 @app.route('/api/getteam')
 def getteam():
