@@ -37,7 +37,7 @@ def creating_hospitals_table():
     client.command("CREATE PROPERTY hospitals.available_beds INTEGER")
     client.close()
 
-#creating_hospitals_table()
+creating_hospitals_table()
 
 
 
