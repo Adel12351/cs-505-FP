@@ -1,7 +1,6 @@
-# import pandas as pd
 import pyorient
-# # import pandas as df
 from csv import reader
+
 add="172.31.145.69"
 def creating_hospitals_table():
     dbname = "finall"
