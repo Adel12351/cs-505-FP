@@ -1,6 +1,6 @@
 import pika
 import sys
-import json
+import  json
 import time
 import threading
 import schedule
@@ -75,6 +75,7 @@ def callback(ch, method, properties, body):
             temp_result = temp_result[0].__getattr__('zip_to')
             hospital_id_in_case_3 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + temp_result)
             hospital_id_in_case_3 = hospital_id_in_case_3[0].__getattr__('ID')
+            # print(hospital_id_in_case_3)
             client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code=" + hospital_id_in_case_3)
             #print ("3333333333: ", hospital_id_in_case_3)
 
@@ -87,6 +88,7 @@ def callback(ch, method, properties, body):
             temp_result = temp_result[0].__getattr__('zip_to')
             hospital_id_in_case_5 = client.command("SELECT ID FROM hospitals WHERE ZIP="+ str(temp_result))
             hospital_id_in_case_5= hospital_id_in_case_5[0].__getattr__('ID')
+            # print(hospital_id_in_case_5)
             client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str(patient_status_code) + ", location_code="+ str(hospital_id_in_case_5))
             client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_5))
             client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_5))
@@ -103,6 +105,7 @@ def callback(ch, method, properties, body):
             temp_result = temp_result[0].__getattr__('zip_to')
             hospital_id_in_case_6 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + str(temp_result))
             hospital_id_in_case_6 = hospital_id_in_case_6[0].__getattr__('ID')
+            # print(hospital_id_in_case_6)
             client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str (patient_status_code) + ", location_code=" + str( hospital_id_in_case_6))
             client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_6))
             client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_6))

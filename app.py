@@ -30,9 +30,11 @@ def reset():
         session_id = client.connect(login, password)
         client.db_open(dbname, login, password)
         client.command("DELETE VERTEX hospitals")
+        # client.command("DELETE VERTEX kyzipdistance")
         client.command("DELETE VERTEX patient")
         client.command("DELETE VERTEX alert_state")
         read_csv.importing_hospital_data()
+        # read_csv.importing_kyzipdistance_data()
         client.command("CREATE VERTEX alert_state set zip_code = [], alert_statewide = 0")
         client.close()
         result ={
