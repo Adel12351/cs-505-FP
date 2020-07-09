@@ -45,7 +45,7 @@ def callback(ch, method, properties, body):
     #print(" [x] %r:%r" % (method.routing_key, body))
     global check_zip_code
     temp = json.loads(body,encoding='utf-8')
-    print("body: {}".format(temp))
+    #print("body: {}".format(temp))
 
     dbname = "finall"
     login = "root"
@@ -64,7 +64,7 @@ def callback(ch, method, properties, body):
         # print("zip code: ", type(zip_code))
         patient_status_code = i['patient_status_code']
         patient_data={first_name,last_name,mrn,zip_code}
-        print ("patient ID is: ",mrn)
+        #print ("patient ID is: ",mrn)
 
         if patient_status_code == "0" or patient_status_code == "1" or patient_status_code == "2" or patient_status_code == "4":
             #print ("patient_status_code = 0, 1, 2 or 4")
@@ -73,9 +73,9 @@ def callback(ch, method, properties, body):
         elif patient_status_code == "3":
             temp_result3 = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals) order by distance asc")
             if len(temp_result3) >= 1:
-                print("length of 33 is: ",len(temp_result3))
+                #print("length of 33 is: ",len(temp_result3))
                 temp_result = temp_result3[0].__getattr__('zip_to')
-                print("333333333333333",temp_result)
+                #print("333333333333333",temp_result)
                 hospital_id_in_case_3 = client.command("SELECT ID FROM hospitals WHERE ZIP=" +str( temp_result))
                 hospital_id_in_case_3 = hospital_id_in_case_3[0].__getattr__('ID')
                 # print(hospital_id_in_case_3)
@@ -91,11 +91,11 @@ def callback(ch, method, properties, body):
 
         elif patient_status_code == "5":
             temp_result5 = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = "+ zip_code +" and zip_to in (select ZIP from hospitals WHERE available_beds >= 1) order by distance asc")
-            print("length of 55 is: ",len(temp_result5))
+            #print("length of 55 is: ",len(temp_result5))
             if len(temp_result5) >= 1:
                 
                 temp_result = temp_result5[0].__getattr__('zip_to')
-                print("5555555555555", temp_result)
+                #print("5555555555555", temp_result)
                 hospital_id_in_case_5 = client.command("SELECT ID FROM hospitals WHERE ZIP="+ str(temp_result))
                 hospital_id_in_case_5= hospital_id_in_case_5[0].__getattr__('ID')
             # print(hospital_id_in_case_5)
@@ -113,10 +113,10 @@ def callback(ch, method, properties, body):
 
         elif patient_status_code == "6":
             temp_result6 = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals WHERE available_beds >= 1 AND TRAUMA != 'NOT AVAILABLE') order by distance asc")
-            print("length of 66 is: ", len(temp_result6))
+            #print("length of 66 is: ", len(temp_result6))
             if len(temp_result6) >= 1:
                 temp_result = temp_result6[0].__getattr__('zip_to')
-                print("66666666666",temp_result)
+                #print("66666666666",temp_result)
                 hospital_id_in_case_6 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + str(temp_result))
                 hospital_id_in_case_6 = hospital_id_in_case_6[0].__getattr__('ID')
             # print(hospital_id_in_case_6)
@@ -149,12 +149,10 @@ def counter():
     #list of zip codes that are under alert due to thier growth for RTR1
     alert_state=[]
     if len(check_zip_code2) > 0:
-        print("1111111",check_zip_code)
-        print("222222",check_zip_code2)
-        #for key,value in check_zip_code2.items():
-                #if check_zip_code2[key] <= 2 * check_zip_code[key]:
+        for key,value in check_zip_code2.items():
+                if check_zip_code2[key] <= 2 * check_zip_code[key]:
                     # add the zip code to the alert_state list
-                    #alert_state.append(key)
+                    alert_state.append(key)
     dbname = "finall"
     login = "root"
     password = "rootpwd"
