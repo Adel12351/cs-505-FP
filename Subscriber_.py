@@ -45,7 +45,7 @@ def callback(ch, method, properties, body):
     #print(" [x] %r:%r" % (method.routing_key, body))
     global check_zip_code
     temp = json.loads(body,encoding='utf-8')
-    # print("body: {}".format(temp))
+    print("body: {}".format(temp))
 
     dbname = "finall"
     login = "root"
@@ -64,36 +64,47 @@ def callback(ch, method, properties, body):
         # print("zip code: ", type(zip_code))
         patient_status_code = i['patient_status_code']
         patient_data={first_name,last_name,mrn,zip_code}
-       # print ("patient ID is: ",mrn)
+        print ("patient ID is: ",mrn)
 
         if patient_status_code == "0" or patient_status_code == "1" or patient_status_code == "2" or patient_status_code == "4":
             #print ("patient_status_code = 0, 1, 2 or 4")
             client.command("CREATE VERTEX patient SET mrn= '" + mrn +"', first_name = '" + first_name + "', last_name = '"+last_name+"',zip_code = "+ zip_code +",patient_status_code = " + patient_status_code + ", location_code=0" )
 
         elif patient_status_code == "3":
-            temp_result = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals) order by distance asc")
-            temp_result = temp_result[0].__getattr__('zip_to')
-            hospital_id_in_case_3 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + temp_result)
-            hospital_id_in_case_3 = hospital_id_in_case_3[0].__getattr__('ID')
-            # print(hospital_id_in_case_3)
-            client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code=" + hospital_id_in_case_3)
+            temp_result3 = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals) order by distance asc")
+            if len(temp_result3) >= 1:
+                print("length of 33 is: ",len(temp_result3))
+                temp_result = temp_result3[0].__getattr__('zip_to')
+                print("333333333333333",temp_result)
+                hospital_id_in_case_3 = client.command("SELECT ID FROM hospitals WHERE ZIP=" +str( temp_result))
+                hospital_id_in_case_3 = hospital_id_in_case_3[0].__getattr__('ID')
+                # print(hospital_id_in_case_3)
+                client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code=" +str( hospital_id_in_case_3))
             #print ("3333333333: ", hospital_id_in_case_3)
 
             # nearest_hospital=client.command("SELECT min(distance),zip_to FROM kyzipdistance WHERE zip_from='"+zip_code+"'")
             # hospital_id_in_case_3 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + nearest_hospital)
             # client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code="+hospital_id_in_case_3)
             # print("3-nearest hospital for testing is: "+ hospital_id_in_case_3)
-        elif patient_status_code == "5":
-            temp_result = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = "+ zip_code +" and zip_to in (select ZIP from hospitals WHERE available_beds >= 1) order by distance asc")
-            temp_result = temp_result[0].__getattr__('zip_to')
-            hospital_id_in_case_5 = client.command("SELECT ID FROM hospitals WHERE ZIP="+ str(temp_result))
-            hospital_id_in_case_5= hospital_id_in_case_5[0].__getattr__('ID')
-            # print(hospital_id_in_case_5)
-            client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str(patient_status_code) + ", location_code="+ str(hospital_id_in_case_5))
-            client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_5))
-            client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_5))
-            #print ("55555555555:  ", hospital_id_in_case_5)
+            else:
+                pass
 
+        elif patient_status_code == "5":
+            temp_result5 = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = "+ zip_code +" and zip_to in (select ZIP from hospitals WHERE available_beds >= 1) order by distance asc")
+            print("length of 55 is: ",len(temp_result5))
+            if len(temp_result5) >= 1:
+                
+                temp_result = temp_result5[0].__getattr__('zip_to')
+                print("5555555555555", temp_result)
+                hospital_id_in_case_5 = client.command("SELECT ID FROM hospitals WHERE ZIP="+ str(temp_result))
+                hospital_id_in_case_5= hospital_id_in_case_5[0].__getattr__('ID')
+            # print(hospital_id_in_case_5)
+                client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str(patient_status_code) + ", location_code="+ str(hospital_id_in_case_5))
+                client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_5))
+                client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_5))
+            #print ("55555555555:  ", hospital_id_in_case_5)
+            else:
+                pass
             # nearest_hospital = client.command("SELECT min(distance),zip_to FROM kyzipdistance WHERE zip_from='" + zip_code + "'")
             # hospital_id_in_case_5 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + nearest_hospital + " AND available_beds >= 1")
             # client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + patient_status_code + ", location_code="+hospital_id_in_case_5)
@@ -101,14 +112,19 @@ def callback(ch, method, properties, body):
             # print ("5- in case 5:", hospital_id_in_case_5)
 
         elif patient_status_code == "6":
-            temp_result = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals WHERE available_beds >= 1 AND TRAUMA != 'NOT AVAILABLE') order by distance asc")
-            temp_result = temp_result[0].__getattr__('zip_to')
-            hospital_id_in_case_6 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + str(temp_result))
-            hospital_id_in_case_6 = hospital_id_in_case_6[0].__getattr__('ID')
+            temp_result6 = client.command("SELECT distance ,zip_to FROM kyzipdistance WHERE zip_from = " + zip_code + " and zip_to in (select ZIP from hospitals WHERE available_beds >= 1 AND TRAUMA != 'NOT AVAILABLE') order by distance asc")
+            print("length of 66 is: ", len(temp_result6))
+            if len(temp_result6) >= 1:
+                temp_result = temp_result6[0].__getattr__('zip_to')
+                print("66666666666",temp_result)
+                hospital_id_in_case_6 = client.command("SELECT ID FROM hospitals WHERE ZIP=" + str(temp_result))
+                hospital_id_in_case_6 = hospital_id_in_case_6[0].__getattr__('ID')
             # print(hospital_id_in_case_6)
-            client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str (patient_status_code) + ", location_code=" + str( hospital_id_in_case_6))
-            client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_6))
-            client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_6))
+                client.command("CREATE VERTEX patient SET mrn= '" + mrn + "', first_name = '" + first_name + "', last_name = '" + last_name + "',zip_code = " + zip_code + ",patient_status_code = " + str (patient_status_code) + ", location_code=" + str( hospital_id_in_case_6))
+                client.command("UPDATE hospitals SET occupied_beds= eval('occupied_beds + 1') WHERE ID="+ str(hospital_id_in_case_6))
+                client.command("UPDATE hospitals SET available_beds= eval('BEDS - occupied_beds') WHERE ID="+ str(hospital_id_in_case_6))
+            else:
+                pass
             #print("666666666:  ", hospital_id_in_case_6)
             
             # nearest_hospital = client.command("SELECT min(distance),zip_to FROM kyzipdistance WHERE zip_from='" + zip_code + "'")
@@ -133,10 +149,12 @@ def counter():
     #list of zip codes that are under alert due to thier growth for RTR1
     alert_state=[]
     if len(check_zip_code2) > 0:
-        for key,value in check_zip_code2.items():
-                if check_zip_code2[key] <= 2 * check_zip_code[key]:
+        print("1111111",check_zip_code)
+        print("222222",check_zip_code2)
+        #for key,value in check_zip_code2.items():
+                #if check_zip_code2[key] <= 2 * check_zip_code[key]:
                     # add the zip code to the alert_state list
-                    alert_state.append(key)
+                    #alert_state.append(key)
     dbname = "finall"
     login = "root"
     password = "rootpwd"

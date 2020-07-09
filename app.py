@@ -15,7 +15,7 @@ def getteam():
     details={
         "team_name":"Shark",
         "team_members":"[12377243]",
-        "app_status_code":"0"
+        "app_status_code":"1"
     }
     return details
 
@@ -157,7 +157,7 @@ def gethospital(id):
     info={
         "total_beds":total_beds,
         "available_beds":available_beds,
-        "zip_code":zip_code
+        "zipcode":zip_code
     }
     return info
 
